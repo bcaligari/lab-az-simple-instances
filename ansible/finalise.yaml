@@ -1,0 +1,48 @@
+---
+- name: register and update server
+  vars:
+    - credentials_file: "~/.credentials/reg_codes.yaml"
+  hosts: all
+
+  pre_tasks:
+    - name: import registration codes
+      include_vars:
+        file: "{{ credentials_file }}"
+
+  roles:
+    - name: register the system
+      role: b1-systems.suseconnect
+      become: true
+      vars:
+        suseconnect_products:
+          - product: 'SLES'
+            key: "{{ reg_key['sles_x86_64'] }}"
+          #- product: 'SLES_SAP'
+          #  key: "{{ reg_key['sles_sap_x86_64'] }}"
+
+  post_tasks:
+    - name: hosts file
+      become: true
+      block:
+      - copy:
+          src: ./files/hosts
+          dest: /etc/hosts
+          owner: root
+          group: root
+          mode: '0644'
+
+    - name: update packages
+      become: true
+      block:
+      - zypper:
+          update_cache: true
+          name: '*'
+          state: latest
+          force: true
+        notify: please reboot
+
+  handlers:
+  - name: please reboot
+    become: true
+    reboot:
+      reboot_timeout: 600
