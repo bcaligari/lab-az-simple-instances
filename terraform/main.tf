@@ -24,7 +24,7 @@ resource "azurerm_subnet" "adhoc_snet" {
   name                 = "snet-${var.default_snet_suffix}"
   resource_group_name  = azurerm_resource_group.adhoc_rg.name
   virtual_network_name = azurerm_virtual_network.adhoc_vnet.name
-  address_prefix       = var.default_snet_address_prefix
+  address_prefixes     = [var.default_snet_address_prefix]
 }
 
 # Basic nsg for linux hosts
