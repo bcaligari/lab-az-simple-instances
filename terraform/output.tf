@@ -15,8 +15,8 @@ output "azure" {
 
 output "hosts" {
   value = {
-    hostname   = azurerm_linux_virtual_machine.adhoc[*].computer_name
-    public_ip  = azurerm_public_ip.adhoc[*].ip_address
-    private_ip = azurerm_network_interface.adhoc[*].private_ip_address
+    hostname   = azurerm_linux_virtual_machine.adhoc_vm[*].computer_name
+    public_ip  = azurerm_public_ip.adhoc_pip[*].ip_address
+    private_ip = azurerm_network_interface.adhoc_nic[*].private_ip_address
   }
 }
