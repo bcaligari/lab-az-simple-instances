@@ -32,6 +32,7 @@ def compile_artefact(stencil, values, filename, mode):
         f.write(template.render(values))
     os.chmod(filename, mode)
 
+
 def main():
     """
     To docsplain later

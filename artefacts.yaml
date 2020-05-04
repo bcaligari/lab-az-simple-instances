@@ -30,7 +30,7 @@
     {{- "{:16}{}.vegetables.local {}".format(host['private_ip'], host['hostname'], host['hostname']) }}
     {% endfor -%}
 
-- filename: ./scripts/vmssh
+- filename: ./vmssh
   desc: "./scripts/vmssh [nodename]"
   mode: '0755'
   stencil: |2
