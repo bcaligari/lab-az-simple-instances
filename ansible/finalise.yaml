@@ -17,8 +17,9 @@
         suseconnect_products:
           - product: 'SLES'
             key: "{{ reg_key['sles_x86_64'] }}"
-          #- product: 'SLES_SAP'
-          #  key: "{{ reg_key['sles_sap_x86_64'] }}"
+          - product: 'sle-module-basesystem'
+          - product: 'sle-module-server-applications'
+          - product: 'sle-module-public-cloud'
 
   post_tasks:
     - name: hosts file

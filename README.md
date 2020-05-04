@@ -63,7 +63,7 @@ source ~/.credentials/az_imports.sh
 
 #### SLES registration codes
 
-Which key to load has to be uncommented in `./ansible/finalise.yaml`:
+Key for base product, and which products to add needs inclusion in `./ansible/finalise.yaml`:
 
 ```{yaml}
   roles:
@@ -81,7 +81,7 @@ Which key to load has to be uncommented in `./ansible/finalise.yaml`:
 #### Config checklist recap
 
 * Azure credentials in `~/.credentials/az_imports.sh` (and sourced)
-* SLES registration codes in `~/.credentials/reg_cods.yaml`
+* SLES products and registration codes in `~/.credentials/reg_cods.yaml`
 * SSH Keys in `~/.credentials/`
 * Terraform specifics in `./terraform.tfvars`
 * Registration code selection in `./ansible/finalise.yaml`
@@ -133,4 +133,5 @@ rm -f ./terraform.tfstate
 rm -f ./terraform.tfstate.backup
 rm -f ./inventory.yaml
 rm -f ./ansible/files/hosts
+rm -f ./scripts/vmssh
 ```

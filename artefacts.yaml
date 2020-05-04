@@ -1,6 +1,7 @@
 ---
-- filename: inventory.yaml
+- filename: ./inventory.yaml
   desc: "Ansible inventory for newly minted instances."
+  mode: '0644'
   stencil: |2
     ---
     all:
@@ -11,10 +12,11 @@
           ansible_user: {{ user }}
           ansible_connection: ssh
           ansible_ssh_private_key_file: {{ ssh_private_key }}
-    {%- endfor %}
+    {%- endfor -%}
 
 - filename: ./ansible/files/hosts
   desc: "/etc hosts file resolving newly minted instances to their private ip"
+  mode: '0644'
   stencil: |2
     127.0.0.1       localhost
     ::1             localhost ipv6-localhost ipv6-loopback
@@ -26,4 +28,36 @@
     
     {% for host in hosts %}
     {{- "{:16}{}.vegetables.local {}".format(host['private_ip'], host['hostname'], host['hostname']) }}
-    {% endfor %}
+    {% endfor -%}
+
+- filename: ./scripts/vmssh
+  desc: "./scripts/vmssh [nodename]"
+  mode: '0755'
+  stencil: |2
+    #!/bin/bash
+
+    if [ -z "$1" ]
+    then
+        echo "Usage: $0 vmname"
+        echo
+    {%- for host in hosts %}
+        echo "    {{"{:20}  [ {:15} ]".format(host['hostname'], host['public_ip'])}}"
+    {%- endfor %}
+        echo
+        exit 0
+    fi
+
+    VMUSER="{{ user }}"
+    VMNAME="$1"
+    VMPORT=22
+    VMSSH="{{ssh_private_key}}"
+
+    case "$VMNAME" in
+    {%- for host in hosts %}
+        "{{host['hostname']}}") VMIP={{host['public_ip']}} ;;
+    {%- endfor %}
+        *) echo No VM goes by that name ; exit 1 ;;
+    esac
+
+    ssh-keygen -R [${VMIP}]:${VMPORT} -f ${HOME}/.ssh/known_hosts >/dev/null 2>&1
+    exec ssh -i ${VMSSH} -X -q ${VMUSER}@${VMIP} -p ${VMPORT} -o StrictHostKeyChecking="no"

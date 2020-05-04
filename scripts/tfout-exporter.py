@@ -2,6 +2,7 @@ import argparse
 import json
 import yaml
 import jinja2
+import os
 
 
 def tfstate_output(tfstate_json):
@@ -21,7 +22,7 @@ def tfstate_output(tfstate_json):
     return tfout_cooked
 
 
-def compile_artefact(stencil, values, filename):
+def compile_artefact(stencil, values, filename, mode):
     """
     Populate a Jinja2 template and write to a file.
     """
@@ -29,7 +30,7 @@ def compile_artefact(stencil, values, filename):
     print(f"Writing {filename}")
     with open(filename, "w") as f:
         f.write(template.render(values))
-
+    os.chmod(filename, mode)
 
 def main():
     """
@@ -53,7 +54,10 @@ def main():
         artefacts = yaml.safe_load(artefacts_file)
         infra_data = tfstate_output(tfstate.read())
         for artefact in artefacts:
-            compile_artefact(artefact['stencil'], infra_data, artefact['filename'])
+            compile_artefact(artefact['stencil'],
+                                        infra_data,
+                                        artefact['filename'],
+                                        int(artefact['mode'], base=8))
 
 
 if __name__ == "__main__":
