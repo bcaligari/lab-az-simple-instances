@@ -73,3 +73,15 @@ variable "vm_image" {
   description = "storage image reference for clientvm vm"
   type        = map(string)
 }
+
+variable "tcp_ports" {
+  description = "list of tcp ports to be opened"
+  type        = list(string)
+  default     = ["22"]
+}
+
+variable "udp_ports" {
+  description = "list of udp ports to be opened"
+  type        = list(string)
+  default     = []
+}

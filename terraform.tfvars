@@ -7,3 +7,5 @@ ssh_public_key      = "~/.credentials/id_rsa.pub"
 instances           = 2
 vm_size             = "Standard_B1s"
 vm_image            = { publisher = "SUSE", offer = "sles-15-sp1-byos", sku = "gen2", version = "2020.02.26" }
+tcp_ports           = ["22"]
+udp_ports           = []

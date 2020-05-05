@@ -35,17 +35,34 @@ resource "azurerm_network_security_group" "adhoc_nsg" {
   tags                = azurerm_resource_group.adhoc_rg.tags
 }
 
-# Security rule to allow SSH
-resource "azurerm_network_security_rule" "adhoc_secrule_ssh" {
-  name                        = "nsg-rule-${azurerm_resource_group.adhoc_rg.name}-ssh"
+# Security rule to open TCP ports
+resource "azurerm_network_security_rule" "adhoc_secrule_tcp" {
+  count                       = length(var.tcp_ports)
+  name                        = "nsg-rule-${azurerm_resource_group.adhoc_rg.name}-udp-${var.tcp_ports[count.index]}"
   resource_group_name         = azurerm_resource_group.adhoc_rg.name
   network_security_group_name = azurerm_network_security_group.adhoc_nsg.name
-  priority                    = 100
+  priority                    = 1000 + count.index
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_range      = "22"
+  destination_port_range      = var.tcp_ports[count.index]
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+}
+
+# Security rule to open UDP ports
+resource "azurerm_network_security_rule" "adhoc_secrule_udp" {
+  count                       = length(var.udp_ports)
+  name                        = "nsg-rule-${azurerm_resource_group.adhoc_rg.name}-udp-${var.udp_ports[count.index]}"
+  resource_group_name         = azurerm_resource_group.adhoc_rg.name
+  network_security_group_name = azurerm_network_security_group.adhoc_nsg.name
+  priority                    = 2000 + count.index
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_port_range           = "*"
+  destination_port_range      = var.udp_ports[count.index]
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
 }

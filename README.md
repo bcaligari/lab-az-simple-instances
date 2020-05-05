@@ -110,21 +110,30 @@ terraform apply tfplan.out
 python ./scripts/tfout-exporter.py ./artefacts.yaml ./terraform.tfstate
 ```
 
+#### Artefacts created
+
+* `./inventory.yaml` - Ansible inventory
+* `./vmssh` - shell script to ssh to vm instance
+* `./ansible/files/hosts` - `/etc/hosts` file for new vms
+
 ### Ansible to configure instances
 
 ```{text}
 ansible-playbook -i inventory.yaml ansible/finalise.yaml 
 ```
 
-### Teardown & Cleanup
+## Teardown & Cleanup
 
-#### Destorying all infrastructure in Azure
+### Destorying all infrastructure in Azure
 
 ```{text}
 terraform destroy -auto-approve terraform/
 ```
 
 ### Cleaning up local files
+
+**Since everything should be in git, then deleting the repo should be the only
+option.**  But, if one insists:
 
 ```{text}
 rm -rf ./.terraform
@@ -133,5 +142,27 @@ rm -f ./terraform.tfstate
 rm -f ./terraform.tfstate.backup
 rm -f ./inventory.yaml
 rm -f ./ansible/files/hosts
-rm -f ./scripts/vmssh
+rm -f ./vmssh
 ```
+
+## Bonus Playbooks
+
+### Anonymous FTP upload server
+
+#### Playbook
+
+* Playbook: `./ansible/anon-ftp-server.yaml`
+* Host Group: `anonftp`
+
+#### Inventory append
+
+```{yaml}
+anonftp:
+  hosts:
+    node-0
+```
+
+#### Terraform variables
+
+* Add port 21 to `tcp_ports` list.
+
