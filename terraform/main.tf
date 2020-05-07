@@ -38,7 +38,7 @@ resource "azurerm_network_security_group" "adhoc_nsg" {
 # Security rule to open TCP ports
 resource "azurerm_network_security_rule" "adhoc_secrule_tcp" {
   count                       = length(var.tcp_ports)
-  name                        = "nsg-rule-${azurerm_resource_group.adhoc_rg.name}-udp-${var.tcp_ports[count.index]}"
+  name                        = "nsg-rule-${azurerm_resource_group.adhoc_rg.name}-tcp-${var.tcp_ports[count.index]}"
   resource_group_name         = azurerm_resource_group.adhoc_rg.name
   network_security_group_name = azurerm_network_security_group.adhoc_nsg.name
   priority                    = 1000 + count.index
