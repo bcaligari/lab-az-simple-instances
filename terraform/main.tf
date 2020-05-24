@@ -1,5 +1,10 @@
+terraform {
+  required_providers {
+    azurerm = "~> 2.8"
+  }
+}
+
 provider "azurerm" {
-  version = "~> 2.8"
   features {}
 }
 
